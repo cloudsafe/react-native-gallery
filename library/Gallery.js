@@ -2,8 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import {
   View
 } from 'react-native';
-
 import Image from 'react-native-transformable-image';
+import Video from 'react-native-transformable-video';
 import ViewPager from '@ldn0x7dc/react-native-view-pager';
 import {createResponder} from 'react-native-gesture-responder';
 
@@ -220,22 +220,45 @@ export default class Gallery extends Component {
 
   renderPage(pageData, pageId, layout) {
     const { onViewTransformed, onTransformGestureReleased, ...other } = this.props;
-    return (
-      <Image
-        {...other}
-        onViewTransformed={((transform) => {
-           onViewTransformed && onViewTransformed(transform, pageId);
-        }).bind(this)}
-        onTransformGestureReleased={((transform) => {
-           onTransformGestureReleased && onTransformGestureReleased(transform, pageId);
-        }).bind(this)}
-        ref={((ref) => {
-           this.imageRefs.set(pageId, ref);
-        }).bind(this)}
-        key={'innerImage#' + pageId}
-        style={{width: layout.width, height: layout.height}}
-        source={{uri: pageData}}/>
-    );
+        if(pageData.type=='image') {
+            return (
+                <Image
+                    {...other}
+                    onViewTransformed={((transform) => {
+                        onViewTransformed && onViewTransformed(transform, pageId);
+                    }).bind(this)}
+                    onTransformGestureReleased={((transform) => {
+                        onTransformGestureReleased && onTransformGestureReleased(transform, pageId);
+                    }).bind(this)}
+                    ref={((ref) => {
+                        this.imageRefs.set(pageId, ref);
+                    }).bind(this)}
+                    key={'innerImage#' + pageId}
+                    style={{width: layout.width, height: layout.height}}
+                    source={{uri: pageData.uri}}/>
+            );
+        }else{
+            return (
+                <Video
+                    {...other}
+                    repeat = { true }
+
+                    paused={this.currentPage==pageId?false:true}
+                    onViewTransformed={((transform) => {
+                        onViewTransformed && onViewTransformed(transform, pageId);
+                    }).bind(this)}
+                    onTransformGestureReleased={((transform) => {
+                        onTransformGestureReleased && onTransformGestureReleased(transform, pageId);
+                    }).bind(this)}
+                    ref={((ref) => {
+                        this.imageRefs.set(pageId, ref);
+                    }).bind(this)}
+                    key={'innerImage#' + pageId}
+                    style={{width: layout.width, height: layout.height}}
+                    source={{uri: pageData.uri}}/>
+            );
+        }
+
   }
 
   resetHistoryImageTransform() {
